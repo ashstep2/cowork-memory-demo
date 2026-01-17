@@ -261,6 +261,7 @@ This memory system works for any high-frequency decision-making:
 ## 📚 Documentation
 
 - **[SETUP.md](./SETUP.md)** - Detailed deployment and customization guide
+- **[PRODUCT_STRATEGY.md](./PRODUCT_STRATEGY.md)** - Product strategy and architecture deep dive
 
 ---
 
