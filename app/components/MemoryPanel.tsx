@@ -121,11 +121,11 @@ export default function MemoryPanel({
       if (mem.investmentThesis.sectors?.length) {
         text += `**Sectors:** ${mem.investmentThesis.sectors.join(', ')}\n`;
       }
-      if (mem.investmentThesis.checkSizes) {
-        text += `**Check Sizes:** ${mem.investmentThesis.checkSizes}\n`;
+      if (mem.investmentThesis.checkSize) {
+        text += `**Check Size:** $${mem.investmentThesis.checkSize.min}M - $${mem.investmentThesis.checkSize.max}M\n`;
       }
-      if (mem.investmentThesis.keyMetrics?.length) {
-        text += `**Key Metrics:** ${mem.investmentThesis.keyMetrics.join(', ')}\n`;
+      if (mem.investmentThesis.priorities?.length) {
+        text += `**Priorities:** ${mem.investmentThesis.priorities.join(', ')}\n`;
       }
       text += '\n';
     }
@@ -142,17 +142,22 @@ export default function MemoryPanel({
       text += '## Deal History\n';
       mem.dealHistory.forEach(deal => {
         text += `- **${deal.company}**: ${deal.outcome}\n`;
-        text += `  Reasons: ${deal.reasons.join(', ')}\n`;
+        if (deal.reasons && deal.reasons.length > 0) {
+          text += `  Reasons: ${deal.reasons.join(', ')}\n`;
+        }
       });
       text += '\n';
     }
 
     if (mem.memoPreferences) {
       text += '## Memo Preferences\n';
-      if (mem.memoPreferences.tone) text += `**Tone:** ${mem.memoPreferences.tone}\n`;
-      if (mem.memoPreferences.length) text += `**Length:** ${mem.memoPreferences.length}\n`;
-      if (mem.memoPreferences.focusAreas?.length) {
-        text += `**Focus Areas:** ${mem.memoPreferences.focusAreas.join(', ')}\n`;
+      text += `**Tone:** ${mem.memoPreferences.tone}\n`;
+      text += `**Hedge Language:** ${mem.memoPreferences.hedgeLanguage ? 'Yes' : 'No'}\n`;
+      if (mem.memoPreferences.maxLengthPages) {
+        text += `**Max Length:** ${mem.memoPreferences.maxLengthPages} pages\n`;
+      }
+      if (mem.memoPreferences.structure && mem.memoPreferences.structure.length > 0) {
+        text += `**Structure:** ${mem.memoPreferences.structure.join(', ')}\n`;
       }
     }
 
