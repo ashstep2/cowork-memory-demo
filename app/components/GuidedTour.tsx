@@ -15,29 +15,25 @@ interface TourStep {
   whatToNotice: string[];
   dealToSelect?: string;
   requiresNewSession?: boolean;
+  followUpPrompt?: string;
+  followUpNotice?: string[];
 }
 
 const TOUR_STEPS: TourStep[] = [
   {
-    id: 'setup',
-    wowNumber: 0,
-    title: 'Setup: Establish Strategic Priorities',
-    description: 'First, tell Claude about Anthropic\'s strategic focus. This will be remembered.',
+    id: 'wow1',
+    wowNumber: 1,
+    title: 'WOW 1: Basic Recall',
+    description: 'Tell Claude about Anthropic\'s strategic priorities, then start a new session and watch it remember.',
     suggestedPrompt: `Our strategic priorities: Invest in developer tools that strengthen Claude's ecosystem. Target companies with strong mission alignment (AI safety, Constitutional AI). Check sizes $10-30M for strategic investments. We care deeply about Claude API integration and competitive positioning vs. OpenAI.`,
     whatToNotice: [
       'Watch the Memory panel populate with strategic priorities',
       'Claude acknowledges and summarizes Anthropic\'s criteria',
     ],
-  },
-  {
-    id: 'wow1',
-    wowNumber: 1,
-    title: 'WOW 1: Basic Recall',
-    description: 'Start a new session and see Claude remember strategic priorities.',
-    suggestedPrompt: `We have an acquisition opportunity for Bun (the JavaScript runtime). Does this align with our strategic criteria?`,
-    whatToNotice: [
-      'Claude references strategic priorities without you repeating them',
-      'It evaluates against Anthropic\'s criteria (ecosystem, developer tools)',
+    followUpPrompt: `We have an acquisition opportunity for Bun (the JavaScript runtime). Does this align with our strategic criteria?`,
+    followUpNotice: [
+      'Start a new session → Claude remembers priorities without repeating',
+      'Select Bun deal → Claude evaluates against Anthropic\'s criteria automatically',
     ],
     dealToSelect: 'bun',
     requiresNewSession: true,
@@ -46,36 +42,31 @@ const TOUR_STEPS: TourStep[] = [
     id: 'wow2',
     wowNumber: 2,
     title: 'WOW 2: Implicit Learning',
-    description: 'Review LangChain and express concerns. Claude will learn your decision criteria.',
+    description: 'Review LangChain and express concerns. Claude will learn your decision criteria without explicit instructions.',
     suggestedPrompt: `Review the LangChain opportunity. Give me the key metrics and strategic considerations.`,
     whatToNotice: [
-      'After you express concerns, watch the Red Flags section update',
-      'Claude learns what Anthropic considers problematic',
+      'Claude surfaces key metrics and strategic risks automatically',
+      'After you respond, express concerns about runway and dependency risk',
+    ],
+    followUpPrompt: `The tight runway (18 months) concerns me - that's borderline for momentum. And the competitive dynamics with Sequoia leading could create conflicts. Also, they control the abstraction layer above Claude which is a dependency risk. Pass for now.`,
+    followUpNotice: [
+      'Watch Red Flags section update with your specific thresholds',
+      'Claude learns: runway <18mo = risky, strategic control = red flag',
+      'Deal History records your decision and reasoning',
     ],
     dealToSelect: 'langchain',
     requiresNewSession: true,
   },
   {
-    id: 'wow2b',
-    wowNumber: 2,
-    title: 'WOW 2: Express Your Concerns',
-    description: 'Now tell Claude what bothers you about this opportunity.',
-    suggestedPrompt: `The tight runway (18 months) concerns me - that's borderline for momentum. And the competitive dynamics with Sequoia leading could create conflicts. Also, they control the abstraction layer above Claude which is a dependency risk. Pass for now.`,
-    whatToNotice: [
-      'Claude learns your thresholds (runway ~18mo, strategic control risks)',
-      'These become decision criteria for future opportunities',
-    ],
-  },
-  {
     id: 'wow3',
     wowNumber: 3,
     title: 'WOW 3: Cross-Deal Inference',
-    description: 'Now review a new opportunity. Claude will connect patterns from past decisions.',
+    description: 'Review a new opportunity. Claude will connect patterns from past decisions and proactively apply your learned criteria.',
     suggestedPrompt: `I have a new opportunity to review - Humanloop. Given our recent strategic decisions, what should I focus on?`,
     whatToNotice: [
-      'Claude references your LangChain pass and the specific concerns',
+      'Claude references your LangChain pass and specific concerns',
       'It proactively checks Humanloop against YOUR learned criteria',
-      'It makes connections between opportunities and strategic risks',
+      'Connects patterns: compares runway, strategic fit, dependency risks',
     ],
     dealToSelect: 'humanloop',
     requiresNewSession: true,
@@ -84,25 +75,25 @@ const TOUR_STEPS: TourStep[] = [
     id: 'wow4',
     wowNumber: 4,
     title: 'WOW 4: Behavioral Adaptation',
-    description: 'Ask for a memo. Claude will use your preferred style automatically.',
+    description: 'Ask for a memo. Claude will use your preferred style and structure automatically.',
     suggestedPrompt: `Write up the investment memo for Humanloop.`,
     whatToNotice: [
-      'Claude uses your memo structure (Strategic Fit → Metrics → Risks → Recommendation)',
-      'Tone is direct with no hedging - because you prefer that',
-      'It gives a clear recommendation without being asked',
+      'Claude uses learned memo structure (Strategic Fit → Metrics → Risks)',
+      'Tone is direct with no hedging - matches your communication style',
+      'Gives clear recommendation without being asked',
     ],
   },
   {
     id: 'wow5',
     wowNumber: 5,
     title: 'WOW 5: User Control',
-    description: 'Edit your memory directly. Changes take effect immediately.',
+    description: 'Edit your memory directly. Changes take effect immediately in the next conversation.',
     suggestedPrompt: `(No prompt needed - interact with the Memory panel)`,
     whatToNotice: [
       'Look at the Red Flags section in the Memory panel',
-      'Click the edit icon (pencil) on any red flag to change its threshold',
-      'Click the delete icon (trash) to remove a red flag completely',
-      'Your next conversation will immediately reflect these changes',
+      'Click edit (pencil) to change thresholds or delete (trash) to remove',
+      'Export memory as JSON or share as markdown summary',
+      'Your next conversation reflects changes instantly',
     ],
   },
 ];
@@ -126,8 +117,26 @@ export default function GuidedTour({
   onReset,
   completedSteps,
 }: GuidedTourProps) {
+  const [showFollowUp, setShowFollowUp] = useState(false);
   const step = TOUR_STEPS[currentStep];
   const isComplete = currentStep >= TOUR_STEPS.length;
+
+  const handleUsePrompt = (prompt: string) => {
+    onUseSuggestedPrompt(prompt);
+    if (step?.followUpPrompt && !showFollowUp) {
+      setShowFollowUp(true);
+    }
+  };
+
+  const handleNextStep = () => {
+    setShowFollowUp(false);
+    onSetStep(currentStep + 1);
+  };
+
+  const handlePrevStep = () => {
+    setShowFollowUp(false);
+    onSetStep(Math.max(0, currentStep - 1));
+  };
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 h-full overflow-hidden flex flex-col min-h-0">
@@ -154,7 +163,10 @@ export default function GuidedTour({
           {TOUR_STEPS.map((s, i) => (
             <button
               key={s.id}
-              onClick={() => onSetStep(i)}
+              onClick={() => {
+                setShowFollowUp(false);
+                onSetStep(i);
+              }}
               className={`flex-1 h-1.5 rounded-full transition-colors ${
                 i < currentStep
                   ? 'bg-[#C96A50]'
@@ -172,74 +184,88 @@ export default function GuidedTour({
 
       {/* Current Step */}
       {!isComplete && step && (
-        <div className="p-4 flex-1 overflow-y-auto min-h-0">
-          {/* Step Header */}
-          <div className="mb-3">
-            <h3 className="font-medium text-gray-900">{step.title}</h3>
-            <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+        <div className="flex-1 overflow-y-auto min-h-0 flex flex-col">
+          <div className="p-4 flex-1">
+            {/* Step Header */}
+            <div className="mb-3">
+              <h3 className="font-medium text-gray-900">{step.title}</h3>
+              <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+            </div>
+
+            {/* Actions */}
+            <div className="space-y-2">
+              {step.requiresNewSession && (
+                <button
+                  onClick={onNewSession}
+                  className="w-full text-left px-3 py-2 bg-[#FDF0ED] text-[#C96A50] rounded-lg text-sm hover:bg-[#FCE5DF] transition-colors flex items-center gap-2 border border-[#E8A090]"
+                >
+                  <Play className="w-4 h-4" />
+                  Start New Session (keeps memory)
+                </button>
+              )}
+
+              {step.dealToSelect && (
+                <button
+                  onClick={() => onSelectDeal(step.dealToSelect!)}
+                  className="w-full text-left px-3 py-2 bg-gray-50 text-gray-700 rounded-lg text-sm hover:bg-gray-100 transition-colors border border-gray-200"
+                >
+                  📁 Select {step.dealToSelect === 'humanloop' ? 'Humanloop' : step.dealToSelect === 'langchain' ? 'LangChain' : 'Bun'} opportunity
+                </button>
+              )}
+
+              {step.suggestedPrompt && !step.suggestedPrompt.startsWith('(') && (
+                <button
+                  onClick={() => handleUsePrompt(step.suggestedPrompt)}
+                  className="w-full text-left px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm hover:bg-gray-100 transition-colors"
+                >
+                  <div className="text-xs text-gray-500 mb-1">Suggested prompt:</div>
+                  <div className="text-gray-700">{step.suggestedPrompt}</div>
+                </button>
+              )}
+
+              {showFollowUp && step.followUpPrompt && (
+                <button
+                  onClick={() => handleUsePrompt(step.followUpPrompt!)}
+                  className="w-full text-left px-3 py-2 bg-[#FDF0ED] border border-[#E8A090] rounded-lg text-sm hover:bg-[#FCE5DF] transition-colors"
+                >
+                  <div className="text-xs text-[#C96A50] mb-1">Follow-up prompt:</div>
+                  <div className="text-gray-700">{step.followUpPrompt}</div>
+                </button>
+              )}
+            </div>
+
+            {/* What to Notice */}
+            <div className="mt-4 pt-3 border-t border-gray-100">
+              <div className="text-xs font-medium text-gray-500 mb-2">👀 What to notice:</div>
+              <ul className="space-y-1">
+                {(showFollowUp && step.followUpNotice ? step.followUpNotice : step.whatToNotice).map((notice, i) => (
+                  <li key={i} className="text-xs text-gray-600 flex items-start gap-2">
+                    <ChevronRight className="w-3 h-3 mt-0.5 text-[#C96A50] flex-shrink-0" />
+                    {notice}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          {/* Actions */}
-          <div className="space-y-2">
-            {step.requiresNewSession && (
+          {/* Navigation - Fixed at bottom */}
+          <div className="px-4 pb-4 pt-2 border-t border-gray-100 flex-shrink-0">
+            <div className="flex items-center justify-between">
               <button
-                onClick={onNewSession}
-                className="w-full text-left px-3 py-2 bg-[#FDF0ED] text-[#C96A50] rounded-lg text-sm hover:bg-[#FCE5DF] transition-colors flex items-center gap-2 border border-[#E8A090]"
+                onClick={handlePrevStep}
+                disabled={currentStep === 0}
+                className="text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Play className="w-4 h-4" />
-                Start New Session (keeps memory)
+                ← Previous
               </button>
-            )}
-
-            {step.dealToSelect && (
               <button
-                onClick={() => onSelectDeal(step.dealToSelect!)}
-                className="w-full text-left px-3 py-2 bg-gray-50 text-gray-700 rounded-lg text-sm hover:bg-gray-100 transition-colors border border-gray-200"
+                onClick={handleNextStep}
+                className="text-sm text-[#C96A50] hover:text-[#B85A40] font-medium flex items-center gap-1"
               >
-                📁 Select {step.dealToSelect === 'humanloop' ? 'Humanloop' : step.dealToSelect === 'langchain' ? 'LangChain' : 'Bun'} opportunity
+                {currentStep < TOUR_STEPS.length - 1 ? 'Next Step' : 'Finish Tour'}
+                <ChevronRight className="w-4 h-4" />
               </button>
-            )}
-
-            {step.suggestedPrompt && !step.suggestedPrompt.startsWith('(') && (
-              <button
-                onClick={() => onUseSuggestedPrompt(step.suggestedPrompt)}
-                className="w-full text-left px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm hover:bg-gray-100 transition-colors"
-              >
-                <div className="text-xs text-gray-500 mb-1">Suggested prompt:</div>
-                <div className="text-gray-700">{step.suggestedPrompt}</div>
-              </button>
-            )}
-          </div>
-
-          {/* What to Notice */}
-          <div className="mt-4 pt-3 border-t border-gray-100">
-            <div className="text-xs font-medium text-gray-500 mb-2">👀 What to notice:</div>
-            <ul className="space-y-1">
-              {step.whatToNotice.map((notice, i) => (
-                <li key={i} className="text-xs text-gray-600 flex items-start gap-2">
-                  <ChevronRight className="w-3 h-3 mt-0.5 text-[#C96A50] flex-shrink-0" />
-                  {notice}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Navigation */}
-          <div className="mt-4 flex items-center justify-between">
-            <button
-              onClick={() => onSetStep(Math.max(0, currentStep - 1))}
-              disabled={currentStep === 0}
-              className="text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50"
-            >
-              ← Previous
-            </button>
-            <button
-              onClick={() => onSetStep(currentStep + 1)}
-              className="text-sm text-[#C96A50] hover:text-[#B85A40] font-medium flex items-center gap-1"
-            >
-              {currentStep < TOUR_STEPS.length - 1 ? 'Next Step' : 'Finish Tour'}
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            </div>
           </div>
         </div>
       )}

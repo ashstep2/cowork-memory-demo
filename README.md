@@ -272,4 +272,4 @@ Feedback welcome! This is a product concept demo showing what's possible with Cl
 
 **Built to demonstrate that AI assistants should learn from us, not just respond to us.**
 
-*Created for Anthropic Labs — January 2025*
+*Created for Anthropic Labs — January 2026*
