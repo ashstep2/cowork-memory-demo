@@ -112,7 +112,7 @@ export default function ChatPanel({
 
     const content = input.trim();
     setInput('');
-    // Reset textarea height
+    // Reset textarea height without causing scroll
     if (inputRef.current) {
       inputRef.current.style.height = 'auto';
     }
@@ -297,6 +297,10 @@ export default function ChatPanel({
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
+            onClick={(e) => {
+              // Prevent any scroll behavior on button click
+              e.currentTarget.blur();
+            }}
             className="px-3 py-2 bg-[#C96A50] text-white rounded-lg hover:bg-[#B85A40] disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex-shrink-0"
           >
             <Send className="w-4 h-4" />

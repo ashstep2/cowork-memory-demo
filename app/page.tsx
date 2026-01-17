@@ -54,18 +54,30 @@ export default function DemoPage() {
 
   // Load memory from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEYS.MEMORY);
-    if (stored) {
-      try {
-        setMemory(JSON.parse(stored));
-      } catch {
-        // Ignore parse errors
-      }
-    }
+    // In production, clear memory on every page load for fresh demos
+    const isProduction = process.env.NODE_ENV === 'production';
 
-    const storedSession = localStorage.getItem(STORAGE_KEYS.SESSION);
-    if (storedSession) {
-      setSessionNumber(parseInt(storedSession, 10));
+    if (isProduction) {
+      // Clear all stored data on page load in production
+      localStorage.removeItem(STORAGE_KEYS.MEMORY);
+      localStorage.removeItem(STORAGE_KEYS.SESSION);
+      localStorage.removeItem(STORAGE_KEYS.CHAT_HISTORY);
+      console.log('[Production] Memory cleared on page load for fresh demo');
+    } else {
+      // In development, load from localStorage to preserve state during dev
+      const stored = localStorage.getItem(STORAGE_KEYS.MEMORY);
+      if (stored) {
+        try {
+          setMemory(JSON.parse(stored));
+        } catch {
+          // Ignore parse errors
+        }
+      }
+
+      const storedSession = localStorage.getItem(STORAGE_KEYS.SESSION);
+      if (storedSession) {
+        setSessionNumber(parseInt(storedSession, 10));
+      }
     }
   }, []);
 
@@ -285,8 +297,8 @@ export default function DemoPage() {
     <div className="min-h-screen bg-[#f5f3f0] flex flex-col">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-4 py-2 sticky top-0 z-10 flex-shrink-0">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div>
+        <div className="max-w-7xl mx-auto grid grid-cols-12 gap-2 items-center">
+          <div className="col-span-9">
             <h1 className="text-base font-semibold text-gray-900">
               Claude Cowork Memory Demo - Venture Capital Use Case
             </h1>
@@ -294,15 +306,17 @@ export default function DemoPage() {
               Strategic Partnerships · Anthropic Labs
             </p>
           </div>
-          <a
-            href="https://vercel.com/new/clone?repository-url=https://github.com/ashstep2/cowork-memory-demo&env=ANTHROPIC_API_KEY&envDescription=Get%20your%20API%20key%20from%20Anthropic%20Console&envLink=https://console.anthropic.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-1.5 px-4 py-2 text-sm bg-[#C96A50] text-white rounded-lg hover:bg-[#A85540] transition-colors font-medium w-full max-w-[300px]"
-          >
-            <Download className="w-3.5 h-3.5" />
-            Get Started (Deploy your Template)
-          </a>
+          <div className="col-span-3">
+            <a
+              href="https://vercel.com/new/clone?repository-url=https://github.com/ashstep2/cowork-memory-demo&env=ANTHROPIC_API_KEY&envDescription=Get%20your%20API%20key%20from%20Anthropic%20Console&envLink=https://console.anthropic.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 px-4 py-2 text-sm bg-[#C96A50] text-white rounded-lg hover:bg-[#A85540] transition-colors font-medium w-full"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Get Started (Deploy your Template)
+            </a>
+          </div>
         </div>
       </header>
 
