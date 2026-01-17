@@ -218,7 +218,7 @@ CONCENTRATION: Top customer = $656K ACV (8% of ARR) ✓
 
   {
     id: 'bun',
-    name: 'Oven (Bun)',
+    name: 'Bun',
     tagline: 'Next-generation JavaScript runtime and toolkit',
     stage: 'Acquisition',
     sector: 'Developer Infrastructure - Runtime',
@@ -249,9 +249,9 @@ CONCENTRATION: Top customer = $656K ACV (8% of ARR) ✓
         background: 'Ex-Stripe, Systems programmer'
       },
       cto: {
-        name: 'Jarred Sumner',
-        role: 'Creator & CEO',
-        background: 'Ex-Stripe, Systems programmer'
+        name: 'N/A',
+        role: 'No separate CTO',
+        background: 'Jarred handles both roles'
       },
       employees: 7,
     },

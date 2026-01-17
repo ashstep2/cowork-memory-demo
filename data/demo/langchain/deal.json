@@ -1,0 +1,38 @@
+{
+  "_comment": "🎯 DEMO FILE - Border line with strategic concerns",
+  "isDemoFile": true,
+  "company": "LangChain",
+  "tagline": "Framework for building context-aware LLM apps",
+  "stage": "Series A",
+  "sector": "Developer Tools - AI Frameworks",
+  "metrics": {
+    "arr": 8200000,
+    "mrr": 683000,
+    "growthMoM": 0.22,
+    "burnMonthly": 650000,
+    "runwayMonths": 18,
+    "customers": 1240,
+    "topCustomerPct": 0.08,
+    "grossMargin": 0.78,
+    "nrr": 1.32
+  },
+  "funding": {
+    "raising": 25000000,
+    "preMoney": 150000000,
+    "lead": "Sequoia",
+    "existingInvestors": ["Benchmark", "a16z"]
+  },
+  "team": {
+    "ceo": {
+      "name": "Harrison Chase",
+      "role": "CEO",
+      "background": "Ex-Robust Intelligence, Stanford CS"
+    },
+    "cto": {
+      "name": "Ankush Gola",
+      "role": "CTO",
+      "background": "Ex-Facebook AI, Berkeley PhD"
+    },
+    "employees": 42
+  }
+}

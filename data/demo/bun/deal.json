@@ -1,0 +1,38 @@
+{
+  "_comment": "🎯 DEMO FILE - Acquisition opportunity (developer infrastructure)",
+  "isDemoFile": true,
+  "company": "Bun",
+  "tagline": "Next-generation JavaScript runtime and toolkit",
+  "stage": "Acquisition",
+  "sector": "Developer Infrastructure - Runtime",
+  "metrics": {
+    "arr": 0,
+    "mrr": 0,
+    "growthMoM": 0,
+    "burnMonthly": 180000,
+    "runwayMonths": 14,
+    "customers": 0,
+    "topCustomerPct": 0,
+    "grossMargin": 0,
+    "nrr": 0
+  },
+  "funding": {
+    "raising": 0,
+    "preMoney": 0,
+    "lead": "N/A",
+    "existingInvestors": ["Y Combinator", "Kleiner Perkins"]
+  },
+  "team": {
+    "ceo": {
+      "name": "Jarred Sumner",
+      "role": "Creator & CEO",
+      "background": "Ex-Stripe, Systems programmer"
+    },
+    "cto": {
+      "name": "N/A",
+      "role": "No separate CTO",
+      "background": "Jarred handles both roles"
+    },
+    "employees": 7
+  }
+}

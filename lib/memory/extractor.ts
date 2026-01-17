@@ -102,9 +102,6 @@ Be conservative - only extract things you're confident about. Don't make things 
 }
 
 /**
- * Parses Claude's extraction response and applies it to memory
- */
-/**
  * Helper: Clean JSON string by removing markdown code blocks
  */
 function cleanJsonString(jsonStr: string): string {
@@ -178,16 +175,29 @@ function applyMemoPreferencesUpdate(extraction: any, memory: Memory, updates: Me
 function applyDealOutcomeUpdate(extraction: any, memory: Memory, updates: MemoryUpdate[]): void {
   if (extraction.dealOutcome) {
     const outcome = extraction.dealOutcome;
-    memory.dealHistory.push({
+
+    // Check if outcome already exists for this company
+    const existingIndex = memory.dealHistory.findIndex(d => d.company === outcome.company);
+
+    const dealOutcome = {
       company: outcome.company,
       outcome: outcome.outcome,
       reasons: outcome.reasons,
       date: new Date().toISOString(),
       keyMetrics: outcome.keyMetrics || {},
-    });
+    };
+
+    if (existingIndex >= 0) {
+      // Update existing entry
+      memory.dealHistory[existingIndex] = dealOutcome;
+    } else {
+      // Add new entry
+      memory.dealHistory.push(dealOutcome);
+    }
+
     updates.push({
       type: 'dealHistory',
-      action: 'add',
+      action: existingIndex >= 0 ? 'update' : 'add',
       description: `${outcome.company}: ${outcome.outcome}`,
       explicit: true,
       data: outcome,
@@ -206,7 +216,7 @@ function applyRawContextUpdate(extraction: any, memory: Memory, updates: MemoryU
         updates.push({
           type: 'context',
           action: 'add',
-          description: ctx.substring(0, 50),
+          description: ctx, // Full description, no truncation
           explicit: true,
           data: ctx,
         });

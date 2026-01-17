@@ -8,7 +8,7 @@ export const API = {
   CHAT_MODEL: 'claude-opus-4-20250514',
   EXTRACT_MODEL: 'claude-opus-4-20250514',
   MAX_CHAT_TOKENS: 2048,
-  MAX_EXTRACT_TOKENS: 1024,
+  MAX_EXTRACT_TOKENS: 4096, // Increased to allow complete extraction JSON with multiple learnings
 } as const;
 
 // ============================================================================

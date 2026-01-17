@@ -1,15 +1,20 @@
 # Your Companies
 
-This folder is for **your real company data**.
+Add your own portfolio companies here. Files in this folder are **gitignored** and stay private.
 
 ## Quick Start
 
-1. Copy a demo company folder from `../demo/acme-ai/`
-2. Rename it to your company name (e.g., `my-portfolio-co/`)
-3. Edit all 3 files:
-   - `deal.json` - Company metadata and metrics
-   - `pitch-deck.md` - Full pitch deck
-   - `financials.md` - Financial details
+```bash
+# Copy a demo company
+cp -r ../demo/humanloop ./my-company-name
+
+# Edit the 3 files with your data
+# - deal.json (metrics and metadata)
+# - pitch-deck.md (full pitch deck)
+# - financials.md (financial details)
+
+# Refresh the app → Your company appears
+```
 
 ## Folder Structure
 
@@ -21,35 +26,18 @@ data/user/
     └── financials.md       # Optional
 ```
 
+## File Format
+
+See [SETUP.md](../../SETUP.md) in the root folder for detailed file format and examples.
+
 ## Privacy
 
-- Files in this folder are **gitignored** by default
-- Your company data stays private on your machine
-- Never committed to version control
+- All files here are **gitignored** by default
+- Your data never gets committed to version control
+- Company data stays on your machine
 
 ## Priority
 
-User files take priority over demo files:
-- If you have `data/user/acme-ai/`, it overrides `data/demo/acme-ai/`
-- Allows you to keep demos while working with real data
-
-## File Format
-
-See `../demo/_README.md` for detailed file format documentation.
-
-## Example
-
-```bash
-# Copy a demo company
-cp -r ../demo/acme-ai ./my-startup
-
-# Edit the files
-# (Use any text editor - VS Code, Sublime, even Notepad!)
-
-# Refresh the app
-# Your company appears in the deal list
-```
-
-## Need Help?
-
-See full documentation in `docs/VC_QUICK_START.md`
+User files override demo files:
+- `data/user/acme/` takes priority over `data/demo/acme/`
+- Customize without modifying demo files

@@ -5,7 +5,8 @@
       "Bash(find:*)",
       "Bash(test:*)",
       "Bash(npm run dev:*)",
-      "Bash(/Users/Ashka/Documents/Documents/Workspace/CodingProjects/cowork-memory-demo/data/user/.gitignore)"
+      "Bash(/Users/Ashka/Documents/Documents/Workspace/CodingProjects/cowork-memory-demo/data/user/.gitignore)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

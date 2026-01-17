@@ -1,0 +1,38 @@
+{
+  "_comment": "🎯 DEMO FILE - Strong investment opportunity (Anthropic ecosystem partner)",
+  "isDemoFile": true,
+  "company": "Humanloop",
+  "tagline": "Developer tools for LLM applications",
+  "stage": "Series A",
+  "sector": "Developer Tools - AI Infrastructure",
+  "metrics": {
+    "arr": 4500000,
+    "mrr": 375000,
+    "growthMoM": 0.18,
+    "burnMonthly": 420000,
+    "runwayMonths": 22,
+    "customers": 340,
+    "topCustomerPct": 0.12,
+    "grossMargin": 0.82,
+    "nrr": 1.28
+  },
+  "funding": {
+    "raising": 15000000,
+    "preMoney": 75000000,
+    "lead": "Seeking",
+    "existingInvestors": ["Lux Capital", "20VC", "AIX Ventures"]
+  },
+  "team": {
+    "ceo": {
+      "name": "Raza Habib",
+      "role": "CEO",
+      "background": "PhD Cambridge, Ex-UCL, YC W21"
+    },
+    "cto": {
+      "name": "David Barber",
+      "role": "Chief Scientist",
+      "background": "Professor UCL, Leading ML researcher"
+    },
+    "employees": 28
+  }
+}

@@ -9,10 +9,12 @@ import {
   Brain,
   ChevronDown,
   ChevronRight,
+  Download,
   Edit2,
   FileText,
   History,
   Info,
+  Share2,
   Sparkles,
   Target,
   Trash2,
@@ -84,6 +86,79 @@ export default function MemoryPanel({
 
   const isHighlighted = (itemId: string) => highlightedItems.includes(itemId);
 
+  // Export memory as JSON file
+  const handleExport = () => {
+    const dataStr = JSON.stringify(memory, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `memory-export-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // Copy memory as shareable text
+  const handleShare = () => {
+    const shareText = generateShareableText(memory);
+    navigator.clipboard.writeText(shareText).then(() => {
+      alert('Memory copied to clipboard! Share with your team.');
+    });
+  };
+
+  // Generate human-readable shareable text
+  const generateShareableText = (mem: Memory): string => {
+    let text = '# Investment Memory Profile\n\n';
+    text += `Last Updated: ${new Date(mem.updatedAt).toLocaleString()}\n\n`;
+
+    if (mem.investmentThesis) {
+      text += '## Investment Thesis\n';
+      if (mem.investmentThesis.stages?.length) {
+        text += `**Stages:** ${mem.investmentThesis.stages.join(', ')}\n`;
+      }
+      if (mem.investmentThesis.sectors?.length) {
+        text += `**Sectors:** ${mem.investmentThesis.sectors.join(', ')}\n`;
+      }
+      if (mem.investmentThesis.checkSizes) {
+        text += `**Check Sizes:** ${mem.investmentThesis.checkSizes}\n`;
+      }
+      if (mem.investmentThesis.keyMetrics?.length) {
+        text += `**Key Metrics:** ${mem.investmentThesis.keyMetrics.join(', ')}\n`;
+      }
+      text += '\n';
+    }
+
+    if (mem.redFlags.length > 0) {
+      text += '## Red Flags\n';
+      mem.redFlags.forEach(flag => {
+        text += `- ${flag.description} (threshold: ${flag.threshold}, confidence: ${Math.round(flag.confidence * 100)}%)\n`;
+      });
+      text += '\n';
+    }
+
+    if (mem.dealHistory.length > 0) {
+      text += '## Deal History\n';
+      mem.dealHistory.forEach(deal => {
+        text += `- **${deal.company}**: ${deal.outcome}\n`;
+        text += `  Reasons: ${deal.reasons.join(', ')}\n`;
+      });
+      text += '\n';
+    }
+
+    if (mem.memoPreferences) {
+      text += '## Memo Preferences\n';
+      if (mem.memoPreferences.tone) text += `**Tone:** ${mem.memoPreferences.tone}\n`;
+      if (mem.memoPreferences.length) text += `**Length:** ${mem.memoPreferences.length}\n`;
+      if (mem.memoPreferences.focusAreas?.length) {
+        text += `**Focus Areas:** ${mem.memoPreferences.focusAreas.join(', ')}\n`;
+      }
+    }
+
+    return text;
+  };
+
   const isEmpty = !memory.investmentThesis && 
     memory.redFlags.length === 0 && 
     !memory.memoPreferences && 
@@ -102,16 +177,36 @@ export default function MemoryPanel({
               <span>Updating...</span>
             </span>
           )}
-          {!isEmpty && !isUpdating && (
-            <span className="ml-auto text-xs text-gray-500">
-              {memory.redFlags.length + memory.dealHistory.length + (memory.investmentThesis ? 1 : 0) + (memory.memoPreferences ? 1 : 0)} items
-            </span>
-          )}
+          <div className="ml-auto flex items-center gap-2">
+            {!isEmpty && !isUpdating && (
+              <>
+                <span className="text-xs text-gray-500">
+                  {memory.redFlags.length + memory.dealHistory.length + (memory.investmentThesis ? 1 : 0) + (memory.memoPreferences ? 1 : 0)} items
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={handleShare}
+                    className="p-1 hover:bg-gray-100 rounded transition-colors"
+                    title="Copy shareable summary"
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-gray-600 hover:text-[#C96A50]" />
+                  </button>
+                  <button
+                    onClick={handleExport}
+                    className="p-1 hover:bg-gray-100 rounded transition-colors"
+                    title="Export as JSON"
+                  >
+                    <Download className="w-3.5 h-3.5 text-gray-600 hover:text-[#C96A50]" />
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-2 space-y-2 min-h-0">
+      <div className="flex-1 overflow-y-auto p-2 pb-6 space-y-2 min-h-0">
         {isEmpty ? (
           <div className="text-center py-6 text-gray-400">
             <Brain className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -129,7 +224,7 @@ export default function MemoryPanel({
                 onToggle={() => toggleSection('thesis')}
                 highlighted={isHighlighted('thesis')}
               >
-                <div className="space-y-2 text-sm">
+                <div className="space-y-3 text-sm">
                   {memory.investmentThesis.stages && memory.investmentThesis.stages.length > 0 && (
                     <div>
                       <span className="text-gray-500">Stages:</span>{' '}
@@ -156,6 +251,24 @@ export default function MemoryPanel({
                       <span className="text-gray-800">{memory.investmentThesis.priorities.join(', ')}</span>
                     </div>
                   )}
+
+                  {/* Confidence indicator */}
+                  <div className="pt-2 mt-2 border-t border-gray-200">
+                    <div className="flex items-center justify-between text-[10px] mb-1">
+                      <span className="text-gray-500">
+                        {memory.investmentThesis.explicit ? 'Explicitly stated' : 'Inferred from conversation'}
+                      </span>
+                      <span className="text-gray-600 font-medium">
+                        {Math.round(memory.investmentThesis.confidence * 100)}%
+                      </span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-green-500 transition-all duration-500"
+                        style={{ width: `${memory.investmentThesis.confidence * 100}%` }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </Section>
             )}
@@ -196,7 +309,7 @@ export default function MemoryPanel({
                 onToggle={() => toggleSection('preferences')}
                 highlighted={isHighlighted('preferences')}
               >
-                <div className="space-y-2 text-sm">
+                <div className="space-y-3 text-sm">
                   {memory.memoPreferences.structure && memory.memoPreferences.structure.length > 0 && (
                     <div>
                       <span className="text-gray-500">Structure:</span>{' '}
@@ -210,6 +323,24 @@ export default function MemoryPanel({
                   <div>
                     <span className="text-gray-500">Hedge language:</span>{' '}
                     <span className="text-gray-800">{memory.memoPreferences.hedgeLanguage ? 'Yes' : 'No'}</span>
+                  </div>
+
+                  {/* Confidence indicator */}
+                  <div className="pt-2 mt-2 border-t border-gray-200">
+                    <div className="flex items-center justify-between text-[10px] mb-1">
+                      <span className="text-gray-500">Learned from writing style</span>
+                      <span className="text-gray-600 font-medium">
+                        {Math.round(memory.memoPreferences.confidence * 100)}%
+                      </span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-500 ${
+                          memory.memoPreferences.confidence >= 0.9 ? 'bg-green-500' : 'bg-[#C96A50]'
+                        }`}
+                        style={{ width: `${memory.memoPreferences.confidence * 100}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
               </Section>
@@ -256,7 +387,7 @@ export default function MemoryPanel({
       </div>
 
       {/* Footer */}
-      <div className="px-3 py-1.5 border-t border-gray-200 bg-gray-50 text-[10px] text-gray-500 flex-shrink-0">
+      <div className="px-3 py-1.5 border-t border-gray-200 bg-white text-[10px] text-gray-500 flex-shrink-0">
         Last updated: {lastUpdated || '—'}
       </div>
     </div>
@@ -329,7 +460,7 @@ function RedFlagItem({
   const [editValue, setEditValue] = useState(flag.threshold?.toString() || '');
 
   return (
-    <div className={`text-sm p-2 rounded ${highlighted ? 'bg-[#FDF0ED] ring-1 ring-[#E8A090]' : 'bg-gray-50'} group`}>
+    <div className={`text-sm p-2 rounded ${highlighted ? 'bg-[#FDF0ED] ring-1 ring-[#E8A090]' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1">
           {editing ? (
@@ -338,37 +469,73 @@ function RedFlagItem({
                 type="text"
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
-                className="px-2 py-1 text-sm border border-gray-300 rounded w-24"
+                className="px-2 py-1 text-sm border border-gray-300 rounded w-24 focus:ring-2 focus:ring-[#C96A50] focus:border-[#C96A50] outline-none"
                 autoFocus
               />
-              <button onClick={() => onSave(editValue)} className="text-green-600 text-xs">Save</button>
-              <button onClick={onCancel} className="text-gray-400 text-xs">Cancel</button>
+              <button
+                onClick={() => onSave(editValue)}
+                className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                Save
+              </button>
+              <button
+                onClick={onCancel}
+                className="px-2 py-1 text-xs text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </button>
             </div>
           ) : (
             <span className="text-gray-800">{flag.description}</span>
           )}
         </div>
         {!editing && (
-          <div className="flex items-center gap-1">
-            <button onClick={onEdit} className="p-1 hover:bg-gray-200 rounded" title="Edit threshold">
-              <Edit2 className="w-3 h-3 text-gray-400 hover:text-gray-600" />
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <button
+              onClick={onEdit}
+              className="p-1.5 hover:bg-white rounded border border-transparent hover:border-gray-300 transition-all"
+              title="Edit threshold"
+            >
+              <Edit2 className="w-3.5 h-3.5 text-gray-500 hover:text-[#C96A50]" />
             </button>
-            <button onClick={onDelete} className="p-1 hover:bg-gray-200 rounded" title="Delete red flag">
-              <Trash2 className="w-3 h-3 text-gray-400 hover:text-gray-600" />
+            <button
+              onClick={onDelete}
+              className="p-1.5 hover:bg-white rounded border border-transparent hover:border-red-300 transition-all"
+              title="Delete red flag"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-gray-500 hover:text-red-600" />
             </button>
           </div>
         )}
       </div>
-      <div className="flex items-center gap-2 mt-1">
-        {!flag.explicit && (
-          <span className="text-xs text-[#C96A50] flex items-center gap-1">
-            <Info className="w-3 h-3" />
-            Inferred ({Math.round(flag.confidence * 100)}% conf)
-          </span>
-        )}
-        {flag.explicit && (
-          <span className="text-xs text-gray-400">Explicit rule</span>
-        )}
+      <div className="flex items-center gap-3 mt-2">
+        {/* Confidence meter */}
+        <div className="flex-1 space-y-0.5">
+          <div className="flex items-center justify-between text-[10px]">
+            <span className="text-gray-500">
+              {flag.explicit ? 'Explicit rule' : 'Inferred'}
+            </span>
+            <span className="text-gray-600 font-medium">
+              {Math.round(flag.confidence * 100)}%
+            </span>
+          </div>
+          <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className={`h-full transition-all duration-500 ${
+                flag.confidence >= 0.9 ? 'bg-green-500' :
+                flag.confidence >= 0.7 ? 'bg-[#C96A50]' :
+                'bg-yellow-500'
+              }`}
+              style={{ width: `${flag.confidence * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Times applied counter */}
+        <div className="flex items-center gap-1 px-2 py-0.5 bg-white rounded border border-gray-200">
+          <span className="text-[10px] text-gray-500">Applied</span>
+          <span className="text-xs font-medium text-gray-700">{flag.timesApplied}×</span>
+        </div>
       </div>
     </div>
   );

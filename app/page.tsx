@@ -21,7 +21,7 @@ import { DEFAULT_MEMORY, Deal, Message, Memory, MemoryUpdate } from '@/lib/memor
 
 export default function DemoPage() {
   // State
-  const [deals, setDeals] = useState<Deal[]>(MOCK_DEALS);  // Start with MOCK_DEALS to avoid hydration error
+  const [deals, setDeals] = useState<Deal[]>([]);  // Start empty to avoid flash
   const [memory, setMemory] = useState<Memory>(DEFAULT_MEMORY);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,10 +40,15 @@ export default function DemoPage() {
       .then(data => {
         if (data.deals && data.deals.length > 0) {
           setDeals(data.deals);
+        } else {
+          // Fallback to MOCK_DEALS if API returns empty
+          setDeals(MOCK_DEALS);
         }
       })
       .catch(err => {
         console.error('[Deals] Failed to load from API, using MOCK_DEALS:', err);
+        // Fallback to MOCK_DEALS on error
+        setDeals(MOCK_DEALS);
       });
   }, []);
 
@@ -103,9 +108,16 @@ export default function DemoPage() {
 
   // Helper: Build deal context string
   const buildDealContext = (dealId: string | null): string | undefined => {
-    if (!dealId) return undefined;
+    if (!dealId) {
+      console.log('[buildDealContext] No dealId provided');
+      return undefined;
+    }
     const deal = deals.find(d => d.id === dealId);
-    if (!deal) return undefined;
+    if (!deal) {
+      console.log('[buildDealContext] Deal not found for id:', dealId, 'Available deals:', deals.map(d => d.id));
+      return undefined;
+    }
+    console.log('[buildDealContext] Building context for:', deal.name);
     return `CURRENT DEAL: ${deal.name}\n\n${deal.deckSummary}\n\nFINANCIALS:\n${deal.financialsDetail}`;
   };
 
@@ -158,7 +170,9 @@ export default function DemoPage() {
     setRecentMemoryUpdates([]);
 
     try {
+      console.log('[sendMessage] Active deal:', activeDeal);
       const dealContext = buildDealContext(activeDeal);
+      console.log('[sendMessage] Deal context:', dealContext ? 'provided' : 'none');
       const memoryContext = injectMemoryContext(memory);
       const conversationMessages = [...messages, userMessage];
 
@@ -281,10 +295,10 @@ export default function DemoPage() {
             </p>
           </div>
           <a
-            href="https://github.com/ashstep2/cowork-memory-demo"
+            href="https://vercel.com/new/clone?repository-url=https://github.com/ashstep2/cowork-memory-demo&env=ANTHROPIC_API_KEY&envDescription=Get%20your%20API%20key%20from%20Anthropic%20Console&envLink=https://console.anthropic.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-4 py-2 text-sm bg-[#C96A50] text-white rounded-full hover:bg-[#A85540] transition-colors font-medium"
+            className="flex items-center justify-center gap-1.5 px-4 py-2 text-sm bg-[#C96A50] text-white rounded-lg hover:bg-[#A85540] transition-colors font-medium w-full max-w-[300px]"
           >
             <Download className="w-3.5 h-3.5" />
             Get Started (Deploy your Template)
@@ -353,7 +367,7 @@ export default function DemoPage() {
           </button>
           <div className="flex items-center gap-3">
             <a
-              href="https://github.com"
+              href="https://github.com/ashstep2/cowork-memory-demo"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"

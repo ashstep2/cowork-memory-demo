@@ -4,7 +4,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 // External libraries
-import { Send, Loader2, Sparkles } from 'lucide-react';
+import { Send, Loader2, Sparkles, ChevronUp } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -41,6 +41,7 @@ export default function ChatPanel({
   const [input, setInput] = useState('');
   const [loadingTime, setLoadingTime] = useState(0);
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
+  const [memoryDrawerExpanded, setMemoryDrawerExpanded] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const loadingStartRef = useRef<number>(0);
@@ -48,9 +49,13 @@ export default function ChatPanel({
   const prevMessageCountRef = useRef<number>(0);
 
   useEffect(() => {
-    // Only auto-scroll if a new message was added (not on initial render)
+    // Only auto-scroll when assistant responds (not when user types)
     if (messages.length > 0 && messages.length > prevMessageCountRef.current) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      const lastMessage = messages[messages.length - 1];
+      // Only scroll if the last message is from the assistant (response completed)
+      if (lastMessage.role === 'assistant') {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
     }
     prevMessageCountRef.current = messages.length;
   }, [messages]);
@@ -238,11 +243,41 @@ export default function ChatPanel({
 
       {/* Recent Memory Updates Banner */}
       {recentMemoryUpdates.length > 0 && (
-        <div className="px-2 py-1 bg-gray-50 border-t border-gray-200 flex-shrink-0">
-          <div className="flex items-center gap-1.5 text-xs text-gray-600">
-            <Sparkles className="w-3 h-3 text-[#C96A50]" />
-            <span>{recentMemoryUpdates.map(u => u.description).join(', ')}</span>
-          </div>
+        <div className="border-t border-gray-200 flex-shrink-0">
+          {/* Expandable Drawer */}
+          {memoryDrawerExpanded && (
+            <div className="px-3 py-2 bg-white border-b border-gray-200 max-h-48 overflow-y-auto">
+              <div className="space-y-1.5">
+                {recentMemoryUpdates.map((update, idx) => (
+                  <div key={idx} className="flex items-start gap-2 text-xs">
+                    <span className="text-gray-400 mt-0.5 flex-shrink-0">•</span>
+                    <span className="text-gray-700 flex-1 break-words">{update.description}</span>
+                    <span className="text-gray-400 text-[10px] uppercase tracking-wide flex-shrink-0">
+                      {update.type}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Collapsed Summary (clickable) */}
+          <button
+            onClick={() => setMemoryDrawerExpanded(!memoryDrawerExpanded)}
+            className="w-full px-2 py-1 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-between gap-2 text-xs text-gray-600"
+          >
+            <div className="flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-[#C96A50]" />
+              <span>
+                {recentMemoryUpdates.length === 1
+                  ? recentMemoryUpdates[0].description
+                  : `${recentMemoryUpdates.length} memories updated`}
+              </span>
+            </div>
+            <ChevronUp
+              className={`w-3 h-3 transition-transform ${memoryDrawerExpanded ? 'rotate-180' : ''}`}
+            />
+          </button>
         </div>
       )}
 
