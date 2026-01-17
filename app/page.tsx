@@ -21,7 +21,7 @@ import { DEFAULT_MEMORY, Deal, Message, Memory, MemoryUpdate } from '@/lib/memor
 
 export default function DemoPage() {
   // State
-  const [deals, setDeals] = useState<Deal[]>([]);  // Start empty to avoid flash
+  const [deals, setDeals] = useState<Deal[]>(MOCK_DEALS);  // Start with MOCK_DEALS for immediate render
   const [memory, setMemory] = useState<Memory>(DEFAULT_MEMORY);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,25 +32,6 @@ export default function DemoPage() {
   const [suggestedPrompt, setSuggestedPrompt] = useState<string | undefined>();
   const [recentMemoryUpdates, setRecentMemoryUpdates] = useState<MemoryUpdate[]>([]);
   const [highlightedMemoryItems, setHighlightedMemoryItems] = useState<string[]>([]);
-
-  // Load deals from API on mount (server-side file loading)
-  useEffect(() => {
-    fetch('/api/deals')
-      .then(res => res.json())
-      .then(data => {
-        if (data.deals && data.deals.length > 0) {
-          setDeals(data.deals);
-        } else {
-          // Fallback to MOCK_DEALS if API returns empty
-          setDeals(MOCK_DEALS);
-        }
-      })
-      .catch(err => {
-        console.error('[Deals] Failed to load from API, using MOCK_DEALS:', err);
-        // Fallback to MOCK_DEALS on error
-        setDeals(MOCK_DEALS);
-      });
-  }, []);
 
   // Load memory from localStorage on mount
   useEffect(() => {

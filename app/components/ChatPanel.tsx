@@ -156,11 +156,11 @@ export default function ChatPanel({
               Claude Cowork Memory Demo
             </p>
             <p className="text-xs text-gray-600 mb-3 leading-relaxed">
-              Experience how Claude can work alongside you as a strategic partner—learning your priorities, decision patterns, and preferences across sessions to provide increasingly tailored insights.
+              Experience how Claude can work alongside you as a strategic partner by learning your priorities, decision patterns, and preferences across sessions to provide increasingly tailored insights.
             </p>
             <div className="text-xs text-gray-500 space-y-1.5 text-left bg-gray-50 rounded-lg p-3 border border-gray-200">
               <p><span className="font-medium text-gray-700">How it works:</span> As you evaluate deals and discuss strategy, Claude automatically builds a memory of your investment thesis, red flags, writing style, and past decisions.</p>
-              <p><span className="font-medium text-gray-700">What makes it special:</span> Claude learns implicitly from context—no need to repeat yourself. It adapts its tone, anticipates your concerns, and connects patterns across opportunities.</p>
+              <p><span className="font-medium text-gray-700">What makes it special:</span> Claude learns implicitly from context, so there is no need to repeat yourself. It adapts its tone, anticipates your concerns, and connects patterns across opportunities.</p>
               <p className="pt-1 border-t border-gray-200"><span className="font-medium text-[#C96A50]">Try it:</span> Follow the Guided Demo on the right to see 5 "wow moments" of persistent memory in action.</p>
             </div>
           </div>

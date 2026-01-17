@@ -34,22 +34,16 @@ export default function DealBrowser({ deals, activeDeal, onSelectDeal }: DealBro
       {/* Deal List */}
       <div className="flex-1 overflow-y-auto min-h-0">
         <div className="p-2 space-y-1">
-          {deals.length === 0 ? (
-            <div className="px-3 py-4 text-center text-xs text-gray-500">
-              Loading deals...
-            </div>
-          ) : (
-            deals.map(deal => (
-              <DealItem
-                key={deal.id}
-                deal={deal}
-                isActive={deal.id === activeDeal}
-                isExpanded={deal.id === expandedDeal}
-                onSelect={() => onSelectDeal(deal.id)}
-                onToggleExpand={() => setExpandedDeal(expandedDeal === deal.id ? null : deal.id)}
-              />
-            ))
-          )}
+          {deals.map(deal => (
+            <DealItem
+              key={deal.id}
+              deal={deal}
+              isActive={deal.id === activeDeal}
+              isExpanded={deal.id === expandedDeal}
+              onSelect={() => onSelectDeal(deal.id)}
+              onToggleExpand={() => setExpandedDeal(expandedDeal === deal.id ? null : deal.id)}
+            />
+          ))}
         </div>
 
         {/* Deal Details */}
