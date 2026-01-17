@@ -292,10 +292,10 @@ export default function DemoPage() {
               href="https://vercel.com/new/clone?repository-url=https://github.com/ashstep2/cowork-memory-demo&env=ANTHROPIC_API_KEY&envDescription=Get%20your%20API%20key%20from%20Anthropic%20Console&envLink=https://console.anthropic.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-1.5 px-4 py-2 text-sm bg-[#C96A50] text-white rounded-lg hover:bg-[#A85540] transition-colors font-medium w-full"
+              className="flex items-center justify-center gap-1.5 px-4 py-2 text-sm bg-[#C96A50] text-white rounded-lg hover:bg-[#A85540] transition-colors font-medium w-full text-center"
             >
               <Download className="w-3.5 h-3.5" />
-              Get Started (Deploy your Template)
+              <span>Get Started (Deploy your Template)</span>
             </a>
           </div>
         </div>

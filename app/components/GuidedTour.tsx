@@ -33,7 +33,7 @@ const TOUR_STEPS: TourStep[] = [
     followUpPrompt: `We have an acquisition opportunity for Bun (the JavaScript runtime). Does this align with our strategic criteria?`,
     followUpNotice: [
       'Start a new session → Claude remembers priorities without repeating',
-      'Select Bun deal → Claude evaluates against Anthropic\'s criteria automatically',
+      'Claude evaluates Bun against Anthropic\'s criteria automatically',
     ],
     dealToSelect: 'bun',
     requiresNewSession: true,
@@ -182,8 +182,8 @@ export default function GuidedTour({
 
       {/* Progress - Only show when expanded */}
       {isExpanded && (
-        <div className="px-4 py-2 border-b border-gray-200 flex-shrink-0">
-        <div className="flex items-center gap-1">
+        <div className="px-3 py-1.5 border-b border-gray-200 flex-shrink-0">
+        <div className="flex items-center gap-0.5">
           {TOUR_STEPS.map((s, i) => (
             <button
               key={s.id}
@@ -191,7 +191,7 @@ export default function GuidedTour({
                 setShowFollowUp(false);
                 onSetStep(i);
               }}
-              className={`flex-1 h-1.5 rounded-full transition-colors ${
+              className={`flex-1 h-1 rounded-full transition-colors ${
                 i < currentStep
                   ? 'bg-[#C96A50]'
                   : i === currentStep
@@ -201,7 +201,7 @@ export default function GuidedTour({
             />
           ))}
         </div>
-        <div className="text-xs text-gray-500 mt-1.5">
+        <div className="text-[9px] text-gray-500 mt-1">
           Step {currentStep + 1} of {TOUR_STEPS.length}
         </div>
         </div>
@@ -210,40 +210,31 @@ export default function GuidedTour({
       {/* Current Step - Only show when expanded */}
       {isExpanded && !isComplete && step && (
         <div className="flex-1 overflow-y-auto min-h-0 flex flex-col">
-          <div className="p-4 flex-1">
+          <div className="p-3 flex-1">
             {/* Step Header */}
-            <div className="mb-3">
-              <h3 className="font-medium text-gray-900">{step.title}</h3>
-              <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+            <div className="mb-2">
+              <h3 className="font-medium text-gray-900 text-xs">{step.title}</h3>
+              <p className="text-[10px] text-gray-600 mt-0.5">{step.description}</p>
             </div>
 
             {/* Actions */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {step.requiresNewSession && (
                 <button
                   onClick={onNewSession}
-                  className="w-full text-left px-3 py-2 bg-[#FDF0ED] text-[#C96A50] rounded-lg text-sm hover:bg-[#FCE5DF] transition-colors flex items-center gap-2 border border-[#E8A090]"
+                  className="w-full text-left px-2 py-1.5 bg-[#FDF0ED] text-[#C96A50] rounded text-[10px] hover:bg-[#FCE5DF] transition-colors flex items-center gap-1.5 border border-[#E8A090]"
                 >
-                  <Play className="w-4 h-4" />
+                  <Play className="w-3 h-3" />
                   Start New Session (keeps memory)
-                </button>
-              )}
-
-              {step.dealToSelect && (
-                <button
-                  onClick={() => onSelectDeal(step.dealToSelect!)}
-                  className="w-full text-left px-3 py-2 bg-gray-50 text-gray-700 rounded-lg text-sm hover:bg-gray-100 transition-colors border border-gray-200"
-                >
-                  📁 Select {step.dealToSelect === 'humanloop' ? 'Humanloop' : step.dealToSelect === 'langchain' ? 'LangChain' : 'Bun'} opportunity
                 </button>
               )}
 
               {step.suggestedPrompt && !step.suggestedPrompt.startsWith('(') && (
                 <button
                   onClick={() => handleUsePrompt(step.suggestedPrompt)}
-                  className="w-full text-left px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm hover:bg-gray-100 transition-colors"
+                  className="w-full text-left px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-[10px] hover:bg-gray-100 transition-colors"
                 >
-                  <div className="text-xs text-gray-500 mb-1">Suggested prompt:</div>
+                  <div className="text-[9px] text-gray-500 mb-0.5">Suggested prompt:</div>
                   <div className="text-gray-700">{step.suggestedPrompt}</div>
                 </button>
               )}
@@ -251,21 +242,21 @@ export default function GuidedTour({
               {showFollowUp && step.followUpPrompt && (
                 <button
                   onClick={() => handleUsePrompt(step.followUpPrompt!)}
-                  className="w-full text-left px-3 py-2 bg-[#FDF0ED] border border-[#E8A090] rounded-lg text-sm hover:bg-[#FCE5DF] transition-colors"
+                  className="w-full text-left px-2 py-1.5 bg-[#FDF0ED] border border-[#E8A090] rounded text-[10px] hover:bg-[#FCE5DF] transition-colors"
                 >
-                  <div className="text-xs text-[#C96A50] mb-1">Follow-up prompt:</div>
+                  <div className="text-[9px] text-[#C96A50] mb-0.5">Follow-up prompt:</div>
                   <div className="text-gray-700">{step.followUpPrompt}</div>
                 </button>
               )}
             </div>
 
             {/* What to Notice */}
-            <div className="mt-4 pt-3 border-t border-gray-100">
-              <div className="text-xs font-medium text-gray-500 mb-2">👀 What to notice:</div>
-              <ul className="space-y-1">
+            <div className="mt-3 pt-2 border-t border-gray-100">
+              <div className="text-[9px] font-medium text-gray-500 mb-1">👀 What to notice:</div>
+              <ul className="space-y-0.5">
                 {(showFollowUp && step.followUpNotice ? step.followUpNotice : step.whatToNotice).map((notice, i) => (
-                  <li key={i} className="text-xs text-gray-600 flex items-start gap-2">
-                    <ChevronRight className="w-3 h-3 mt-0.5 text-[#C96A50] flex-shrink-0" />
+                  <li key={i} className="text-[9px] text-gray-600 flex items-start gap-1">
+                    <ChevronRight className="w-2.5 h-2.5 mt-0.5 text-[#C96A50] flex-shrink-0" />
                     {notice}
                   </li>
                 ))}
@@ -274,21 +265,21 @@ export default function GuidedTour({
           </div>
 
           {/* Navigation - Fixed at bottom */}
-          <div className="px-4 pb-4 pt-2 border-t border-gray-100 flex-shrink-0">
+          <div className="px-3 pb-3 pt-1.5 border-t border-gray-100 flex-shrink-0">
             <div className="flex items-center justify-between">
               <button
                 onClick={handlePrevStep}
                 disabled={currentStep === 0}
-                className="text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-[10px] text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 ← Previous
               </button>
               <button
                 onClick={handleNextStep}
-                className="text-sm text-[#C96A50] hover:text-[#B85A40] font-medium flex items-center gap-1"
+                className="text-[10px] text-[#C96A50] hover:text-[#B85A40] font-medium flex items-center gap-0.5"
               >
                 {currentStep < TOUR_STEPS.length - 1 ? 'Next Step' : 'Finish Tour'}
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3 h-3" />
               </button>
             </div>
           </div>
@@ -297,17 +288,17 @@ export default function GuidedTour({
 
       {/* Complete State - Only show when expanded */}
       {isExpanded && isComplete && (
-        <div className="p-6 text-center flex-1 flex flex-col items-center justify-center min-h-0">
-          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <Check className="w-6 h-6 text-green-600" />
+        <div className="p-4 text-center flex-1 flex flex-col items-center justify-center min-h-0">
+          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+            <Check className="w-5 h-5 text-green-600" />
           </div>
-          <h3 className="font-medium text-gray-900">Tour Complete!</h3>
-          <p className="text-sm text-gray-600 mt-1">
+          <h3 className="font-medium text-gray-900 text-xs">Tour Complete!</h3>
+          <p className="text-[10px] text-gray-600 mt-0.5">
             You've seen all 5 Wow Moments. Feel free to continue exploring!
           </p>
           <button
             onClick={onReset}
-            className="mt-4 text-sm text-[#C96A50] hover:text-[#B85A40] font-medium px-3 py-1.5 rounded hover:bg-[#FDF0ED] transition-colors"
+            className="mt-3 text-[10px] text-[#C96A50] hover:text-[#B85A40] font-medium px-2 py-1 rounded hover:bg-[#FDF0ED] transition-colors"
           >
             Restart Tour
           </button>
