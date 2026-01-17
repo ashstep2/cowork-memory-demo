@@ -61,11 +61,42 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('Chat API error:', error);
+    console.error('[Chat API] Full error object:', error);
+
+    // Check for Anthropic SDK specific errors
+    if (error && typeof error === 'object' && 'status' in error) {
+      const anthropicError = error as any;
+      console.error('[Chat API] Anthropic error status:', anthropicError.status);
+      console.error('[Chat API] Anthropic error message:', anthropicError.message);
+
+      // Handle specific Anthropic API errors
+      if (anthropicError.status === 401) {
+        return NextResponse.json(
+          { error: 'Invalid Anthropic API key. Please check your API key in the .env.local file.' },
+          { status: 401 }
+        );
+      }
+
+      if (anthropicError.status === 429) {
+        return NextResponse.json(
+          { error: 'Rate limit exceeded. Please wait a moment and try again.' },
+          { status: 429 }
+        );
+      }
+
+      if (anthropicError.status === 402) {
+        return NextResponse.json(
+          { error: 'Insufficient credits. Please add payment method in Anthropic Console.' },
+          { status: 402 }
+        );
+      }
+    }
 
     // Provide more specific error messages
     if (error instanceof Error) {
-      if (error.message.includes('API key')) {
+      console.error('[Chat API] Error message:', error.message);
+
+      if (error.message.includes('API key') || error.message.includes('authentication')) {
         return NextResponse.json(
           { error: 'API authentication failed. Please check your Anthropic API key configuration.' },
           { status: 401 }
@@ -85,6 +116,12 @@ export async function POST(request: NextRequest) {
           { status: 504 }
         );
       }
+
+      // Return the actual error message for debugging
+      return NextResponse.json(
+        { error: `API Error: ${error.message}` },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(

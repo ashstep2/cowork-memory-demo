@@ -285,7 +285,7 @@ export default function MemoryPanel({
                 icon={<AlertTriangle className="w-4 h-4 text-gray-600" />}
                 expanded={expandedSections.redFlags}
                 onToggle={() => toggleSection('redFlags')}
-                highlighted={highlightedItems.some(h => h.startsWith('rf_'))}
+                highlighted={isHighlighted('redFlags')}
                 badge={memory.redFlags.length}
               >
                 <div className="space-y-2">
@@ -293,7 +293,7 @@ export default function MemoryPanel({
                     <RedFlagItem
                       key={flag.id}
                       flag={flag}
-                      highlighted={isHighlighted(flag.id)}
+                      highlighted={false}
                       editing={editingFlag === flag.id}
                       onEdit={() => setEditingFlag(flag.id)}
                       onDelete={() => deleteRedFlag(flag.id)}

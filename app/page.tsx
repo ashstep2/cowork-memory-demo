@@ -134,7 +134,9 @@ export default function DemoPage() {
     });
 
     if (!response.ok) {
-      throw new Error('Chat request failed');
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      console.error('[Chat API Error]', response.status, errorData);
+      throw new Error(errorData.error || `Chat request failed: ${response.status}`);
     }
 
     return response.json();
@@ -145,7 +147,7 @@ export default function DemoPage() {
     return updates
       .map(u => {
         if (u.type === 'thesis') return 'thesis';
-        if (u.type === 'redFlag' && u.data) return (u.data as { id?: string }).id;
+        if (u.type === 'redFlag') return 'redFlags';
         if (u.type === 'preference') return 'preferences';
         if (u.type === 'dealHistory') return 'history';
         return null;
