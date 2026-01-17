@@ -371,7 +371,7 @@ export default function DemoPage() {
 
       {/* Footer */}
       <footer className="bg-[#f5f3f0] px-4 py-3 flex-shrink-0 sticky bottom-0 z-10">
-        <div className="max-w-7xl mx-auto flex flex-col items-center gap-2 text-sm text-gray-600">
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 text-sm text-gray-600">
           <button
             onClick={handleFullReset}
             className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"
@@ -379,27 +379,26 @@ export default function DemoPage() {
             <RotateCcw className="w-3.5 h-3.5" />
             Reset
           </button>
-          <div className="flex items-center gap-3">
-            <a
-              href="https://github.com/ashstep2/cowork-memory-demo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"
-            >
-              <Github className="w-3.5 h-3.5" />
-              GitHub Repository
-            </a>
-            <span className="text-gray-400">|</span>
-            <a
-              href="https://www.anthropic.com/news/introducing-anthropic-labs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"
-            >
-              Built for Anthropic Labs
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
+          <span className="text-gray-400">|</span>
+          <a
+            href="https://github.com/ashstep2/cowork-memory-demo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"
+          >
+            <Github className="w-3.5 h-3.5" />
+            GitHub Repository
+          </a>
+          <span className="text-gray-400">|</span>
+          <a
+            href="https://www.anthropic.com/news/introducing-anthropic-labs"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"
+          >
+            Built for Anthropic Labs
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
         </div>
       </footer>
     </div>
