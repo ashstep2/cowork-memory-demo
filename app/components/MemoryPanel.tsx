@@ -281,7 +281,7 @@ export default function MemoryPanel({
             {/* Red Flags */}
             {memory.redFlags.length > 0 && (
               <Section
-                title="Red Flags"
+                title="🚩 Red Flags"
                 icon={<AlertTriangle className="w-4 h-4 text-gray-600" />}
                 expanded={expandedSections.redFlags}
                 onToggle={() => toggleSection('redFlags')}
@@ -358,14 +358,14 @@ export default function MemoryPanel({
                 icon={<History className="w-4 h-4 text-gray-600" />}
                 expanded={expandedSections.history}
                 onToggle={() => toggleSection('history')}
-                highlighted={highlightedItems.some(h => h.startsWith('deal_'))}
+                highlighted={isHighlighted('history')}
                 badge={memory.dealHistory.length}
               >
                 <div className="space-y-2">
                   {memory.dealHistory.map((deal, index) => (
                     <div
                       key={index}
-                      className={`text-sm p-2 rounded ${isHighlighted(`deal_${deal.company}`) ? 'bg-[#FDF0ED] ring-1 ring-[#E8A090]' : 'bg-gray-50'}`}
+                      className="text-sm p-2 rounded bg-gray-50"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-medium text-gray-800 truncate">{deal.company}</span>

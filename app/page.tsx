@@ -147,7 +147,7 @@ export default function DemoPage() {
         if (u.type === 'thesis') return 'thesis';
         if (u.type === 'redFlag' && u.data) return (u.data as { id?: string }).id;
         if (u.type === 'preference') return 'preferences';
-        if (u.type === 'dealHistory' && u.data) return `deal_${(u.data as { company?: string }).company}`;
+        if (u.type === 'dealHistory') return 'history';
         return null;
       })
       .filter(Boolean) as string[];
