@@ -393,6 +393,51 @@ npm run lint     # Run ESLint
 
 ---
 
+## 🎯 For VCs: Ready-to-Use Template
+
+Want to use this with your own deal flow? We've created a **1-click template** designed for VCs:
+
+**👉 [Get the VC Template](https://github.com/ashstep2/cowork-memory-demo/generate) ← Start here**
+
+### What You Get
+
+The template repository includes:
+
+✅ **File-Based System** - No coding required, edit Markdown files
+✅ **Pre-Populated Demos** - 3 example companies to explore immediately
+✅ **Non-Technical Setup** - Clear instructions for anyone to follow
+✅ **Easy Customization** - Swap demo files for your own companies in minutes
+✅ **Privacy-First** - All data stays on your machine
+
+### Perfect For
+
+- **Venture Capitalists** evaluating deal flow
+- **Private Equity** professionals doing diligence
+- **Corporate Development** teams reviewing M&A targets
+- **Angel Investors** managing portfolio decisions
+
+### How It Works
+
+```bash
+# 1. Use the template on GitHub (creates your own copy)
+# 2. Clone to your computer
+git clone https://github.com/YOUR-USERNAME/your-repo-name.git
+
+# 3. Add your API key
+cp .env.example .env.local
+# Edit .env.local with your Anthropic API key
+
+# 4. Run
+npm install && npm run dev
+
+# 5. Start with demo companies, then swap in your own
+# Edit files in data/demo/ or add to data/user/
+```
+
+**[View Template Repository →](https://github.com/ashstep2/cowork-memory-demo/generate)**
+
+---
+
 ## 📈 Product Strategy
 
 ### Vision

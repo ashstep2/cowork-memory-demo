@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 // External libraries
-import { Github, ExternalLink, RotateCcw } from 'lucide-react';
+import { Github, ExternalLink, RotateCcw, Download } from 'lucide-react';
 
 // Components
 import ChatPanel from '@/app/components/ChatPanel';
@@ -14,13 +14,14 @@ import MemoryPanel from '@/app/components/MemoryPanel';
 
 // Data and utilities
 import { MEMORY, STORAGE_KEYS } from '@/lib/constants';
-import { MOCK_DEALS, getDealById } from '@/lib/deals';
+import { MOCK_DEALS } from '@/lib/deals';
 import { applyExtraction } from '@/lib/memory/extractor';
 import { injectMemoryContext } from '@/lib/memory/injector';
-import { DEFAULT_MEMORY, Message, Memory, MemoryUpdate } from '@/lib/memory/types';
+import { DEFAULT_MEMORY, Deal, Message, Memory, MemoryUpdate } from '@/lib/memory/types';
 
 export default function DemoPage() {
   // State
+  const [deals, setDeals] = useState<Deal[]>(MOCK_DEALS);  // Start with MOCK_DEALS to avoid hydration error
   const [memory, setMemory] = useState<Memory>(DEFAULT_MEMORY);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +32,20 @@ export default function DemoPage() {
   const [suggestedPrompt, setSuggestedPrompt] = useState<string | undefined>();
   const [recentMemoryUpdates, setRecentMemoryUpdates] = useState<MemoryUpdate[]>([]);
   const [highlightedMemoryItems, setHighlightedMemoryItems] = useState<string[]>([]);
+
+  // Load deals from API on mount (server-side file loading)
+  useEffect(() => {
+    fetch('/api/deals')
+      .then(res => res.json())
+      .then(data => {
+        if (data.deals && data.deals.length > 0) {
+          setDeals(data.deals);
+        }
+      })
+      .catch(err => {
+        console.error('[Deals] Failed to load from API, using MOCK_DEALS:', err);
+      });
+  }, []);
 
   // Load memory from localStorage on mount
   useEffect(() => {
@@ -89,7 +104,7 @@ export default function DemoPage() {
   // Helper: Build deal context string
   const buildDealContext = (dealId: string | null): string | undefined => {
     if (!dealId) return undefined;
-    const deal = getDealById(dealId);
+    const deal = deals.find(d => d.id === dealId);
     if (!deal) return undefined;
     return `CURRENT DEAL: ${deal.name}\n\n${deal.deckSummary}\n\nFINANCIALS:\n${deal.financialsDetail}`;
   };
@@ -259,50 +274,32 @@ export default function DemoPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-base font-semibold text-gray-900">
-              Claude Cowork Memory Demo
+              Claude Cowork Memory Demo - Venture Capital Use Case
             </h1>
             <p className="text-xs text-gray-500 mt-0">
-              Strategic Partnerships · Anthropic
+              Strategic Partnerships · Anthropic Labs
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleFullReset}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Reset
-            </button>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-700 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-            >
-              <Github className="w-3.5 h-3.5" />
-              GitHub
-            </a>
-            <a
-              href="https://www.anthropic.com/news/introducing-anthropic-labs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-[#2f2f2f] text-white rounded-full hover:bg-[#1f1f1f] transition-colors"
-            >
-              Built for Anthropic Labs
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
+          <a
+            href="https://github.com/ashstep2/cowork-memory-demo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-4 py-2 text-sm bg-[#C96A50] text-white rounded-full hover:bg-[#A85540] transition-colors font-medium"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Get Started (Deploy your Template)
+          </a>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="w-full px-3 py-2 flex-1">
-        <div className="max-w-7xl mx-auto grid grid-cols-12 gap-2 min-h-[calc(100vh-80px)]">
+        <div className="max-w-7xl mx-auto grid grid-cols-12 gap-2 min-h-[calc(100vh-120px)]">
           {/* Left Column: Deal Browser + Memory */}
-          <div className="col-span-3 flex flex-col gap-2 h-[calc(100vh-100px)]">
+          <div className="col-span-3 flex flex-col gap-2 h-[calc(100vh-140px)]">
             <div className="h-[35%] min-h-0">
               <DealBrowser
-                deals={MOCK_DEALS}
+                deals={deals}
                 activeDeal={activeDeal}
                 onSelectDeal={setActiveDeal}
               />
@@ -317,7 +314,7 @@ export default function DemoPage() {
           </div>
 
           {/* Center: Chat */}
-          <div className="col-span-6 h-[calc(100vh-100px)]">
+          <div className="col-span-6 h-[calc(100vh-140px)]">
             <ChatPanel
               messages={messages}
               onSendMessage={sendMessage}
@@ -330,7 +327,7 @@ export default function DemoPage() {
           </div>
 
           {/* Right Column: Guided Tour */}
-          <div className="col-span-3 h-[calc(100vh-100px)]">
+          <div className="col-span-3 h-[calc(100vh-140px)]">
             <GuidedTour
               currentStep={tourStep}
               onSetStep={handleSetTourStep}
@@ -343,6 +340,40 @@ export default function DemoPage() {
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-[#f5f3f0] px-4 py-3 flex-shrink-0 sticky bottom-0 z-10">
+        <div className="max-w-7xl mx-auto flex flex-col items-center gap-2 text-sm text-gray-600">
+          <button
+            onClick={handleFullReset}
+            className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            Reset
+          </button>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"
+            >
+              <Github className="w-3.5 h-3.5" />
+              GitHub Repository
+            </a>
+            <span className="text-gray-400">|</span>
+            <a
+              href="https://www.anthropic.com/news/introducing-anthropic-labs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:text-gray-900 transition-colors"
+            >
+              Built for Anthropic Labs
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

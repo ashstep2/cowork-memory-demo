@@ -3,7 +3,9 @@
     "allow": [
       "Bash(npm run build:*)",
       "Bash(find:*)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(npm run dev:*)",
+      "Bash(/Users/Ashka/Documents/Documents/Workspace/CodingProjects/cowork-memory-demo/data/user/.gitignore)"
     ],
     "deny": [],
     "ask": []

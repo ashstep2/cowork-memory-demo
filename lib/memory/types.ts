@@ -151,6 +151,7 @@ export interface Deal {
   };
   deckSummary: string;
   financialsDetail: string;
+  _isDemo?: boolean; // Mark as demo file vs real company
 }
 
 // Guided Tour Types

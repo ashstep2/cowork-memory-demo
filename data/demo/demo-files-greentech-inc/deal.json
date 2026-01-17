@@ -1,0 +1,38 @@
+{
+  "_comment": "🎯 DEMO FILE - Clear PASS scenario with multiple red flags",
+  "isDemoFile": true,
+  "company": "GreenTech Inc",
+  "tagline": "Renewable energy marketplace",
+  "stage": "Pre-Seed",
+  "sector": "Climate Tech",
+  "metrics": {
+    "arr": 0,
+    "mrr": 0,
+    "growthMoM": 0,
+    "burnMonthly": 150000,
+    "runwayMonths": 8,
+    "customers": 0,
+    "topCustomerPct": 0,
+    "grossMargin": 0,
+    "nrr": 0
+  },
+  "funding": {
+    "raising": 3000000,
+    "preMoney": 10000000,
+    "lead": "Seeking",
+    "existingInvestors": []
+  },
+  "team": {
+    "ceo": {
+      "name": "Jordan Taylor",
+      "role": "CEO & Founder",
+      "background": "Ex-McKinsey, Harvard MBA"
+    },
+    "cto": {
+      "name": "No CTO",
+      "role": "Open Position",
+      "background": "Hiring"
+    },
+    "employees": 5
+  }
+}

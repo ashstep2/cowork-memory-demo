@@ -1,5 +1,20 @@
 import { Deal } from '../memory/types';
 
+// Try to load from file system (server-side only)
+let DEALS: Deal[] = [];
+
+// Only import and use loader on server side
+if (typeof window === 'undefined') {
+  try {
+    // Dynamic import to avoid bundling fs on client
+    const { loadDealsFromFiles } = require('./loader');
+    DEALS = loadDealsFromFiles();
+  } catch (error) {
+    console.warn('[Deals] File loading failed, using hardcoded MOCK_DEALS', error);
+  }
+}
+
+// Hardcoded fallback deals (used when file system loading fails or on client)
 export const MOCK_DEALS: Deal[] = [
   {
     id: 'humanloop',
@@ -330,8 +345,9 @@ RECOMMENDATION:
   }
 ];
 
-export const deals = MOCK_DEALS;
+// Export the loaded deals (from files if available, otherwise MOCK_DEALS)
+export const deals = DEALS.length > 0 ? DEALS : MOCK_DEALS;
 
 export function getDealById(id: string): Deal | undefined {
-  return MOCK_DEALS.find(d => d.id === id);
+  return deals.find(d => d.id === id);
 }

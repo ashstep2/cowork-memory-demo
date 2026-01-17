@@ -1,0 +1,38 @@
+{
+  "_comment": "🎯 DEMO FILE - Borderline seed stage company with red flags",
+  "isDemoFile": true,
+  "company": "Quantum Labs",
+  "tagline": "AI-powered drug discovery platform",
+  "stage": "Seed",
+  "sector": "Healthcare - AI/ML",
+  "metrics": {
+    "arr": 800000,
+    "mrr": 66666,
+    "growthMoM": 0.12,
+    "burnMonthly": 350000,
+    "runwayMonths": 14,
+    "customers": 8,
+    "topCustomerPct": 0.28,
+    "grossMargin": 0.65,
+    "nrr": 1.15
+  },
+  "funding": {
+    "raising": 8000000,
+    "preMoney": 32000000,
+    "lead": "Seeking",
+    "existingInvestors": ["Y Combinator", "Khosla Ventures"]
+  },
+  "team": {
+    "ceo": {
+      "name": "Dr. Priya Gupta",
+      "role": "CEO & Co-Founder",
+      "background": "PhD Harvard Computational Biology, Ex-Google Health"
+    },
+    "cto": {
+      "name": "Alex Kim",
+      "role": "CTO & Co-Founder",
+      "background": "Ex-DeepMind, Cambridge CS"
+    },
+    "employees": 15
+  }
+}
