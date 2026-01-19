@@ -118,7 +118,7 @@ export default function GuidedTour({
   completedSteps,
 }: GuidedTourProps) {
   const [showFollowUp, setShowFollowUp] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false); // Start collapsed
+  const [isExpanded, setIsExpanded] = useState(true); // Start expanded
   const step = TOUR_STEPS[currentStep];
   const isComplete = currentStep >= TOUR_STEPS.length;
 
