@@ -6,20 +6,6 @@
 
 ---
 
-## 🎯 For Anthropic Labs
-
-This demo showcases **3 realistic investment scenarios** relevant to Anthropic's ecosystem:
-
-### Demo Companies
-
-1. **Humanloop** - Strong partnership opportunity ($4.5M ARR, 128% NRR, drives $3.6M Claude API revenue)
-2. **LangChain** - Borderline strategic case ($8.2M ARR, owns abstraction layer, competitive dynamics)
-3. **Bun** - Acquisition opportunity (pre-revenue, 8M+ npm downloads, developer infrastructure)
-
-**Try it live:** [cowork-memory-demo.vercel.app](TODO)
-
----
-
 ## What Is This?
 
 Most AI assistants are **stateless** — every conversation starts from scratch. This demo shows Claude:
@@ -272,5 +258,3 @@ Feedback welcome! This is a product concept demo showing what's possible with Cl
 ---
 
 **Built to demonstrate that AI assistants should learn from us, not just respond to us.**
-
-*Created for Anthropic Labs — January 2026*
